@@ -1,216 +1,40 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.6.6/chartjs-plugin-zoom.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+<script src="https://root.cern/js/latest/scripts/JSRoot.core.js" type="text/javascript"></script>
 
-### ssss
-ssdasdsa
+<h3>Text Before </h3>
 
-<div style="width:75%">
-	<canvas id="canvas"></canvas>
-</div>
-<script>
-	function trim(str, chars) {
-		return ltrim(rtrim(str, chars), chars);
-	}
+<div id="object_draw" style="width: 800px; height:600px"></div>
 
-	function ltrim(str, chars) {
-		chars = chars || "\\s";
-		return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
-	}
+<h3>Text After</h3>
 
-	function rtrim(str, chars) {
-		chars = chars || "\\s";
-		return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
-	}
-	function loaddata(loadoption) {
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function () {
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				var xmlDoc = xhttp.responseXML;
-				var xZ, xN, xHalflife, xP0n, xP1n, xP2n, xP3n, xPn, xMassE, xS1n, xQb;
-				xZ = xmlDoc.getElementsByTagName("Z");
-				xN = xmlDoc.getElementsByTagName("N");
-				xHalflife = xmlDoc.getElementsByTagName("Halflife");
-				xP0n = xmlDoc.getElementsByTagName("P0n");
-				xP1n = xmlDoc.getElementsByTagName("P1n");
-				xP2n = xmlDoc.getElementsByTagName("P2n");
-				xP3n = xmlDoc.getElementsByTagName("P3n");
-				xPn = xmlDoc.getElementsByTagName("Pn");
-				xMassE = xmlDoc.getElementsByTagName("Mass_excess");
-				xQb = xmlDoc.getElementsByTagName("Qb");
-				xS1n = xmlDoc.getElementsByTagName("S1n");
-				var isodata = [];
-				var stabledata = [];
-				var labelsdata_tooltips0 = [];
-				var labelsdata_tooltips1 = [];
-				var labelsdata_tooltips2 = [];
-				var labelsdata_tooltips3 = [];
-				var labelsdata_tooltips4 = [];
-				var labelsdata_tooltips5 = [];
-				var labelsdata_tooltips6 = [];
-				var labelsdata_tooltips7 = [];
-				var labelsdata_tooltips8 = [];
-				var labelsdata_iso = [];
-				var ele = ["H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As",
-					"Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy",
-					"Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es",
-					"Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og"];
-				var stableiso = [[1, 0], [1, 1], [2, 1], [2, 2], [3, 3], [3, 4], [4, 5], [5, 5], [5, 6], [6, 6], [6, 7], [7, 7], [7, 8], [8, 8], [8, 9], [8, 10], [9, 10], [10, 10], [10, 11], [10, 12],
-				[11, 12], [12, 12], [12, 13], [12, 14], [13, 14], [14, 14], [14, 15], [14, 16], [15, 16], [16, 16], [16, 17], [16, 18], [16, 20], [17, 18], [17, 20], [18, 18],
-				[18, 20], [18, 22], [19, 20], [19, 21], [19, 22], [20, 20], [20, 22], [20, 23], [20, 24], [20, 26], [20, 28], [21, 24], [22, 24], [22, 25], [22, 26], [22, 27],
-				[22, 28], [23, 27], [23, 28], [24, 26], [24, 28], [24, 29], [24, 30], [25, 30], [26, 28], [26, 30], [26, 31], [26, 32], [27, 32], [28, 30], [28, 32], [28, 33],
-				[28, 34], [28, 36], [29, 34], [29, 36], [30, 34], [30, 36], [30, 37], [30, 38], [30, 40], [31, 38], [31, 40], [32, 38], [32, 40], [32, 41], [32, 42], [32, 44],
-				[33, 42], [34, 40], [34, 42], [34, 43], [34, 44], [34, 46], [34, 48], [35, 44], [35, 46], [36, 42], [36, 44], [36, 46], [36, 47], [36, 48], [36, 50], [37, 48],
-				[37, 50], [38, 46], [38, 48], [38, 49], [38, 50], [39, 50], [40, 50], [40, 51], [40, 52], [40, 54], [40, 56], [41, 52], [42, 50], [42, 52], [42, 53], [42, 54],
-				[42, 55], [42, 56], [42, 58], [44, 52], [44, 54], [44, 55], [44, 56], [44, 57], [44, 58], [44, 60], [45, 58], [46, 56], [46, 58], [46, 59], [46, 60], [46, 62],
-				[46, 64], [47, 60], [47, 62], [48, 58], [48, 60], [48, 62], [48, 63], [48, 64], [48, 65], [48, 66], [48, 68], [49, 64], [49, 66], [50, 62], [50, 64], [50, 65],
-				[50, 66], [50, 67], [50, 68], [50, 69], [50, 70], [50, 72], [50, 74], [51, 70], [51, 72], [52, 68], [52, 70], [52, 71], [52, 72], [52, 73], [52, 74], [52, 76],
-				[52, 78], [53, 74], [54, 70], [54, 72], [54, 74], [54, 75], [54, 76], [54, 77], [54, 78], [54, 80], [54, 82], [55, 78], [56, 74], [56, 76], [56, 78], [56, 79],
-				[56, 80], [56, 81], [56, 82], [57, 81], [57, 82], [58, 78], [58, 80], [58, 82], [58, 84], [59, 82], [60, 82], [60, 83], [60, 84], [60, 85], [60, 86], [60, 88],
-				[60, 90], [62, 82], [62, 85], [62, 86], [62, 87], [62, 88], [62, 90], [62, 92], [63, 88], [63, 90], [64, 88], [64, 90], [64, 91], [64, 92], [64, 93], [64, 94],
-				[64, 96], [65, 94], [66, 90], [66, 92], [66, 94], [66, 95], [66, 96], [66, 97], [66, 98], [67, 98], [68, 94], [68, 96], [68, 98], [68, 99], [68, 100], [68, 102],
-				[69, 100], [70, 98], [70, 100], [70, 101], [70, 102], [70, 103], [70, 104], [70, 106], [71, 104], [71, 105], [72, 102], [72, 104], [72, 105], [72, 106], [72, 107],
-				[72, 108], [73, 107], [73, 108], [74, 106], [74, 108], [74, 109], [74, 110], [74, 112], [75, 110], [75, 112], [76, 108], [76, 110], [76, 111], [76, 112], [76, 113],
-				[76, 114], [76, 116], [77, 114], [77, 116], [78, 112], [78, 114], [78, 116], [78, 117], [78, 118], [78, 120], [79, 118], [80, 116], [80, 118], [80, 119], [80, 120],
-				[80, 121], [80, 122], [80, 124], [81, 122], [81, 124], [82, 122], [82, 124], [82, 125], [82, 126], [83, 126], [90, 142], [92, 143], [92, 146]];
+<script type='text/javascript'>
 
-				var labelsdata_iso_stable = [];
+  var cnt = 0;
 
-				for (var i = 0; i < 286; i++) {
-					stabledata.push({
-						x: stableiso[i][1],
-						y: stableiso[i][0]
-					});
-					var ZZ = stableiso[i][0];
-					var AA = stableiso[i][1] + ZZ;
-					labelsdata_iso_stable.push(AA.toString() + ele[ZZ-1]);
-				}
-				for (var i = 0; i < xZ.length; i++) {
-					isodata.push({
-						x: xN[i].childNodes[0].nodeValue,
-						y: xZ[i].childNodes[0].nodeValue
-					});
-					var Z = parseInt(xZ[i].childNodes[0].nodeValue);
-					var A = parseInt(xN[i].childNodes[0].nodeValue) + Z;
-					labelsdata_iso.push(A.toString() + ele[Z - 1]);
-					labelsdata_tooltips0.push("T1/2 = " + (parseFloat(xHalflife[i].childNodes[0].nodeValue)*1000).toFixed(4) + " ms");
-					labelsdata_tooltips1.push("P0n = " + (parseFloat(xP0n[i].childNodes[0].nodeValue) * 100).toFixed(2) + " %");
-					labelsdata_tooltips2.push("P1n = " + (parseFloat(xP1n[i].childNodes[0].nodeValue) * 100).toFixed(2) + " %");
-					labelsdata_tooltips3.push("P2n = " + (parseFloat(xP2n[i].childNodes[0].nodeValue) * 100).toFixed(2) + " %");
-					labelsdata_tooltips4.push("P3n = " + (parseFloat(xP3n[i].childNodes[0].nodeValue) * 100).toFixed(2) + " %");
-					labelsdata_tooltips5.push("Pn = " + (parseFloat(xPn[i].childNodes[0].nodeValue) * 100).toFixed(2) + " %");
-					labelsdata_tooltips6.push("Mass Excess = " + (parseFloat(xMassE[i].childNodes[0].nodeValue)).toFixed(2) + " MeV");
-					labelsdata_tooltips7.push("Q beta = " + (parseFloat(xQb[i].childNodes[0].nodeValue)).toFixed(2) + " MeV");
-					labelsdata_tooltips8.push("Q beta 1n = " + (parseFloat(xQb[i].childNodes[0].nodeValue) - parseFloat(xS1n[i].childNodes[0].nodeValue)).toFixed(2) + " MeV");
-				}
-				//! load things
-				var ctx = document.getElementById('canvas').getContext('2d');
-				window.myScatter = new Chart(ctx, {
-					type: 'scatter',
-					data: {
-						labels_tooltips0: labelsdata_tooltips0,
-						labels_tooltips1: labelsdata_tooltips1,
-						labels_tooltips2: labelsdata_tooltips2,
-						labels_tooltips3: labelsdata_tooltips3,
-						labels_tooltips4: labelsdata_tooltips4,
-						labels_tooltips5: labelsdata_tooltips5,
-						labels_tooltips6: labelsdata_tooltips6,
-						labels_tooltips7: labelsdata_tooltips7,
-						labels_tooltips8: labelsdata_tooltips8,
-						labels_iso: labelsdata_iso,
-						labels_iso_stable: labelsdata_iso_stable,
-						datasets: [
-							{
-								label: 'radioactive',
-								backgroundColor: '#FF0000',
-								data: isodata,
-								pointRadius: 10,
-								pointStyle: 'rect',
-								pointBackgroundColor: '#FF0000'
-							},
-							{
-								label: 'stable',
-								backgroundColor: '#000000',
-								data: stabledata,
-								pointRadius: 10,
-								pointStyle: 'rect',
-								pointBackgroundColor: '#000000'
-							}
-						]
-					},
-					options: {
-						scales:{
-							yAxes: [{
-								scaleLabel:{
-									display: true,
-									labelString: 'Atomic number Z'
-								}
-							}],
-							xAxes: [{
-								scaleLabel:{
-									display: true,
-									labelString: 'Neutron number N'
-								}
-							}],
-						},
-						tooltips: {
-							mode: 'single',
-							callbacks: {
-								label: function (tooltipItem, data) {
-									var label=[];
-									if (tooltipItem.datasetIndex == 0) {
-										label.push(data.labels_iso[tooltipItem.index]);
-										label.push(data.labels_tooltips0[tooltipItem.index]);
-										label.push(data.labels_tooltips1[tooltipItem.index]);
-										label.push(data.labels_tooltips2[tooltipItem.index]);
-										label.push(data.labels_tooltips3[tooltipItem.index]);
-										label.push(data.labels_tooltips4[tooltipItem.index]);
-										label.push(data.labels_tooltips5[tooltipItem.index]);
-										label.push(data.labels_tooltips6[tooltipItem.index]);
-										label.push(data.labels_tooltips7[tooltipItem.index]);
-										label.push(data.labels_tooltips8[tooltipItem.index]);
-									}else{
-										label.push(data.labels_iso_stable[tooltipItem.index]);
-									}
-									
-									return label;
-								}
-							}
-						},
-						plugins: {
-							datalabels: {
-								formatter: function (value, ctx) {
-									if (ctx.datasetIndex == 0) {
-										return ctx.chart.data.labels_iso[ctx.dataIndex];
-									}else{
-										return "";
-									}
-								}
-							}
-						},
-						pan: {
-							enabled: true,
-							mode: 'xy',
-						},
-						zoom: {
-							enabled: true,
-							mode: 'xy', // or 'x' for "drag" version
-						}
-					}
-				});
-			}
-		};
-		if (loadoption == "hfb") {
-			xhttp.open("GET", "https://ribf.riken.jp/~phong/mysite/_site/files/Mennik.2014.xml", true);
-		} else if (loadoption == "ktuy") {
-			xhttp.open("GET", "https://ribf.riken.jp/~phong/mysite/_site/files/KTUY05.xml", true);
-		} else {
-			xhttp.open("GET", "https://ribf.riken.jp/~phong/mysite/_site/files/Moller.2003.xml", true);
-		}
-		xhttp.send();
-	}
-	window.onload = function () {
-		loaddata('edm');
-	};
+  function updateGUI() {
+     // if getting histogram from THttpServer as JSON string, one should parse it like:
+     // var histo = JSROOT.parse(your_json_string);
+
+     // this is just generation of histogram
+     let histo = JSROOT.createHistogram("TH2I", 20, 20);
+     for (let iy = 0; iy < 20; iy++)
+        for (let ix = 0; ix < 20; ix++) {
+           let bin = histo.getBin(ix+1, iy+1), val = 0;
+           switch (cnt % 4) {
+              case 1: val = ix + 19 - iy; break;
+              case 2: val = 38 - ix - iy; break;
+              case 3: val = 19 - ix + iy; break;
+              default: val = ix + iy; break;
+           }
+           histo.setBinContent(bin, val);
+        }
+
+     histo.fName = "generated";
+     histo.fTitle = "Drawing " + cnt++;
+
+     JSROOT.redraw('object_draw', histo, "colz");
+  }
+
+  updateGUI();
+  setInterval(updateGUI, 3000);
+
 </script>
