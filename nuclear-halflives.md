@@ -1,5 +1,5 @@
 <script src="https://root.cern/js/latest/scripts/JSRoot.core.js" type="text/javascript"></script>
-<h3>Test</h3>
+<h3>Nuclear Half-lives</h3>
 <div id="drawth2" style="width:600px; height:400px"></div>
 <div id="data source">
 <i>Data source : <a href="htts://www.nndc.bnl.gov/ensdf" target="_blank">Evaluated Nuclear Structure Data File</a>, last updated 2020-10-01 </i>
