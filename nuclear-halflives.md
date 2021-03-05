@@ -23,7 +23,7 @@
     d3.select("#user_tooltip").html("Isotope: <sup>"+ A +"</sup>"+ element +" | T<sub>1/2</sub> = " + info.cont.toFixed(4)+" s");
     return true; // means event is handled and can be ignored
  }
- JSROOT.openFile("https://ribf.riken.jp/~phong/halflives.root").then(file => {
+ JSROOT.openFile("https://root.cern/js/files/hsimple.root").then(file => {
     file.readObject("halflives;1")
         .then(obj2 => JSROOT.draw("drawth2", obj2, "colz;logz;nostat").then(painter =>{
           painter.configureUserTooltipHandler(1 ? UserHandler : null);
