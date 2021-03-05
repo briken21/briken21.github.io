@@ -1377,7 +1377,7 @@ JSROOT.define(['rawinflate'], () => {
          let buf = new TBuffer(blob, 0, file);
 
          if (buf.substring(0, 4) !== 'root')
-            return Promise.reject(Error(`Not a ROOT file ${file.fURL}`));
+            return Promise.reject(Error("NOT A ROOT FILE! " + file.fURL));
 
          buf.shift(4);
 
@@ -1407,11 +1407,11 @@ JSROOT.define(['rawinflate'], () => {
 
          // empty file
          if (!file.fSeekInfo || !file.fNbytesInfo)
-            return Promise.reject(Error(`File ${file.fURL} does not provide streamer infos`));
+            return Promise.reject(Error("Empty file " + file.fURL));
 
          // extra check to prevent reading of corrupted data
          if (!file.fNbytesName || file.fNbytesName > 100000)
-            return Promise.reject(Error(`Cannot read directory info of the file ${file.fURL}`));
+            return Promise.reject(Error("Init : cannot read directory info of file " + file.fURL));
 
          //*-*-------------Read directory info
          let nbytes = file.fNbytesName + 22;
@@ -1436,7 +1436,7 @@ JSROOT.define(['rawinflate'], () => {
          buf3.classStreamer(file, 'TDirectory');
 
          if (!file.fSeekKeys)
-            return Promise.reject(Error(`Empty keys list in ${file.fURL}`));
+            return Promise.reject(Error("Empty keys list in " + file.fURL));
 
          // read with same request keys and streamer infos
          return file.readBuffer([file.fSeekKeys, file.fNbytesKeys, file.fSeekInfo, file.fNbytesInfo]);
@@ -1452,7 +1452,7 @@ JSROOT.define(['rawinflate'], () => {
          let buf5 = new TBuffer(blobs[1], 0, file),
             si_key = buf5.readTKey();
          if (!si_key)
-            return Promise.reject(Error(`Fail to read StreamerInfo data in ${file.fURL}`));
+            return Promise.reject(Error("Fail to read data for TKeys"));
 
          file.fKeys.push(si_key);
          return file.readObjBuffer(si_key);
@@ -2433,10 +2433,10 @@ JSROOT.define(['rawinflate'], () => {
 
       return new Promise((resolve,reject) =>
 
-         this.fs.open(this.fFileName, 'r', (status, fd) => {
+         this.fs.open(filename, 'r', (status, fd) => {
             if (status) {
                console.log(status.message);
-               return reject(Error(`Not possible to open ${this.fFileName} inside node.js`));
+               return reject(Error(`Not possible to open ${filename} inside node.js`));
             }
             let stats = this.fs.fstatSync(fd);
 
@@ -2462,7 +2462,7 @@ JSROOT.define(['rawinflate'], () => {
 
          let cnt = 0, blobs = [];
 
-         let readfunc = (err, bytesRead, buf) => {
+         function readfunc(err, bytesRead, buf) {
 
             let res = new DataView(buf.buffer, buf.byteOffset, place[cnt + 1]);
             if (place.length === 2) return resolve(res);
@@ -2470,10 +2470,10 @@ JSROOT.define(['rawinflate'], () => {
             blobs.push(res);
             cnt += 2;
             if (cnt >= place.length) return resolve(blobs);
-            this.fs.read(this.fd, Buffer.alloc(place[cnt + 1]), 0, place[cnt + 1], place[cnt], readfunc);
+            this.fs.read(this.fd, new Buffer(place[cnt + 1]), 0, place[cnt + 1], place[cnt], readfunc);
          }
 
-         this.fs.read(this.fd, Buffer.alloc(place[1]), 0, place[1], place[0], readfunc);
+         this.fs.read(this.fd, new Buffer(place[1]), 0, place[1], place[0], readfunc);
       });
    }
 

@@ -187,13 +187,13 @@ JSROOT.define(['d3', 'painter'], (d3, jsrp) => {
          let key = keys[i];
 
          let item = {
-            _name: key.fName + ";" + key.fCycle,
-            _cycle: key.fCycle,
-            _kind: "ROOT." + key.fClassName,
-            _title: key.fTitle,
-            _keyname: key.fName,
-            _readobj: null,
-            _parent: folder
+            _name : key.fName + ";" + key.fCycle,
+            _cycle : key.fCycle,
+            _kind : "ROOT." + key.fClassName,
+            _title : key.fTitle,
+            _keyname : key.fName,
+            _readobj : null,
+            _parent : folder
          };
 
          if (key.fObjlen > 1e5) item._title += ' (size: ' + (key.fObjlen/1e6).toFixed(1) + 'MB)';
@@ -215,8 +215,8 @@ JSROOT.define(['d3', 'painter'], (d3, jsrp) => {
                item._name = key.fName;
                keysHierarchy(item, dir.fKeys, file, dirname + key.fName + "/");
             }
-         } else if ((key.fClassName == 'TList') && (key.fName == 'StreamerInfo')) {
-            if (JSROOT.settings.SkipStreamerInfos) continue;
+         } else
+         if ((key.fClassName == 'TList') && (key.fName == 'StreamerInfo')) {
             item._name = 'StreamerInfo';
             item._kind = "ROOT.TStreamerInfoList";
             item._title = "List of streamer infos for binary I/O";
@@ -1626,7 +1626,7 @@ JSROOT.define(['d3', 'painter'], (d3, jsrp) => {
                prnt = prnt._parent;
             }
 
-            hitem._background = 'LightSteelBlue';
+            hitem._background = 'grey';
             if (active.indexOf(hitem)<0) active.push(hitem);
          }
 
@@ -2100,15 +2100,19 @@ JSROOT.define(['d3', 'painter'], (d3, jsrp) => {
       if (handle && ('execute' in handle))
          menu.add("Execute", () => this.executeCommand(itemname, menu.tree_node));
 
+      let drawurl = onlineprop.server + onlineprop.itemname + "/draw.htm", separ = "?";
+      if (this.isMonitoring()) {
+         drawurl += separ + "monitoring=" + this.getMonitoringInterval();
+         separ = "&";
+      }
+
       if (sett.opts && (node._can_draw !== false))
-         menu.addDrawMenu("Draw in new window", sett.opts,
-                           arg => window.open(onlineprop.server + "?nobrowser&item=" + onlineprop.itemname +
-                                              (this.isMonitoring() ? "&monitoring=" + this.getMonitoringInterval() : "") +
-                                              (arg ? "&opt=" + arg : "")));
+         menu.addDrawMenu("Draw in new window", sett.opts, function(arg) { window.open(drawurl+separ+"opt=" +arg); });
 
       if (sett.opts && (sett.opts.length > 0) && root_type && (node._can_draw !== false))
-         menu.addDrawMenu("Draw as png", sett.opts,
-                           arg => window.open(onlineprop.server + onlineprop.itemname + "/root.png?w=600&h=400" + (arg ? "&opt=" + arg : "")));
+         menu.addDrawMenu("Draw as png", sett.opts, function(arg) {
+            window.open(onlineprop.server + onlineprop.itemname + "/root.png?w=400&h=300&opt=" + arg);
+         });
 
       if ('_player' in node)
          menu.add("Player", () => this.player(itemname));
@@ -2325,7 +2329,7 @@ JSROOT.define(['d3', 'painter'], (d3, jsrp) => {
          delete this.disp;
       }
 
-      return this.createDisplay();
+      this.createDisplay();
    }
 
    /** @summary function updates object drawings for other painters
